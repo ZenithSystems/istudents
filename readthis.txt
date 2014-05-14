@@ -1,0 +1,185 @@
+ไฟล์ของระบบจะอยู่ใน function/souce ทั้งหมด โดยเรียกใช้ผ่านตัวแปร $main
+มี function ดังนี้
+
+function/souce
+	---------------------------------------------------------------
+	cache($main->cache) ระบบ Cache
+
+		save(String|name, String|data, String|file|default='', Integer|time|default=0)
+			parms|name = ชื่อของ cache
+			parms|data = ข้อมูลที่จะเก็บใว้ใน cache
+			parms|file = ท่าต้องการลบ cache ให้ใส่ชื่อ ไฟล์ cache
+			parms|time = เวลาเป็นวินาที ท่าไม่มีวันหมด ก็ให้ใช้ 0
+
+			เอาใว้ save ไฟล์ cache ลบไฟล์ cache และเพิ่มเข้า database
+		return void
+		-----------------------------------------------------------
+		load(String|name, String|type)
+			parms|name = ชือของ cache
+			parms|type = ชนิดของ การแสดงผลเมื่ือ ดึง cache มาใช้ (php, html)
+
+			เอาใว้ load cache ขึ้นมาแสดงผล ทั้งในรูปแบบ php และ html
+		return mixed(null and String)
+		-----------------------------------------------------------
+		check(String|name)
+			parms|name = ชื่อของ cache
+
+			เอาใว้ ตรวจว่ามี cache อยู่ทั้งใน path และ database หรือเปล่า
+		return boolean
+	---------------------------------------------------------------
+	content($main->content) ระบบจัดกสนรูปแบบเว็บไซต์
+
+		String|file_content|default=''			================= เก็บชื่อของไฟล์ content หลักที่ตัวเว็บใช้
+		String|path_template|default=''			================= เก็บชื่อของ โฟลเดอร์ ของ template ที่ตัวเว็บใช้
+		Array|check_login|default=[true, true, false] = เอาใว้ตรวจสถานะการเข้าหน้าเว็บ เมื่อ login หรือไม่ login
+			check_login[0] = ท่าเป็น true ก็จะให้ทำการ check ว่าคนที่เข้าหน้าเว็บมา login หรือยัง
+			check_login[1] = ท่าเป็น true ก็จะให้ทำการ check ว่าคนที่เข้าหน้าเว็บมาต้องไม่ login
+			check_login[2] = ท่าเป็น true ก็จะให้ทำการ check ว่าคนที่เข้าหน้าเว็บเป็น admin หรือเปล่า
+		Boolean|auto_display|default=true		================= เอาใว้บอกว่าหน้าที่กำลังเข้าจะให้ show template อัตโนมัติหรือเปล่า
+		Array|path_all_template|default=[]		================= จะทำการเก็บหน้าของ template ทุกตัวที่ต้องใช้เอาใว้
+			path_all_template[ชื่อของ template] = ข้อมูลในไฟล์ template
+		String|path_templath_default|default='theme/default'	= ชื่อ โฟลเดอร์ default ของตัวเว็บ
+		Array|file_request|default=[in_file]	================= เอาใว้เก็บไฟล์ template ที่ระบบต้องใช้
+			file_request[] = ชื่อของไฟล์ template ที่ต้องใช้
+		Array|text_pattern_default|default=[in_file]			= เอาใว้เก็บ ส่วนของ layout ที่เป็น default เพื่อหน้าไหน ไม่ได้กำหนดระบบจะกำหนดให้เอง
+			text_pattern_default[ชื่อของ layout] = ค่าเริ่มต้นของ layout
+		-----------------------------------------------------------
+		__construct()
+			จะทำการกำหนด path_template ให้เป็น path_templath_default โดยอัตโนมัติ ท่าไม่มีคนมมาเปลี่ยน
+		return void
+		-----------------------------------------------------------
+		__destruct()
+			จะทำการแสดง template ขึ้นมา ก็ต่อเมื่อ auto_display เป็น true
+		return void
+		-----------------------------------------------------------
+		toHTML()
+			จะทำการ แสดงผล html เมื่อทำการประมวณผลเสร็จแล้วออกมา และก็ใช้ check_login ในการ check ด้วย
+		return void
+		-----------------------------------------------------------
+		drawLayout(Boolean|permission, String|layout, String|content|default='')
+			parms|permission	= ใช้ในบางสถานะการณ์ ที่จำเป็น
+			parms|layout		= ชื่อไฟล์ ใน template ที่เราต้องการ set สามารถปล่อยเป็นค่าว่างได้ ''
+			parms|content		= ท่ามี content เป็นของตัวเองก็สามารถใส่ตรงนี้ได้เลย
+
+			เอาใว้ในการเปลี่ยน content ที่มีทั้ง tag php และ html ให้สามารถ run ได้ด้วย eval
+		return void
+		-----------------------------------------------------------
+		setAuto(Boolean|set)
+			parms|set = เอาใว้ เป็นตัวตั้งค่าให้
+
+			กับ auto_display
+		return void
+		-----------------------------------------------------------
+		setCheckLogin(Boolean|log1|default=true, Boolean|log2|default=true, Boolean|log3|default=false)
+			parms|log1 = เอาใว้ เป็นตัวตั้งค่าให้
+			parms|log2 = เอาใว้ เป็นตัวตั้งค่าให้
+			parms|log3 = เอาใว้ เป็นตัวตั้งค่าให้
+
+			กับ check_login
+		return void
+		-----------------------------------------------------------
+		setPathTemplate(String|path)
+			parms|path = ชื่อโฟลเดอร์ของ path
+
+			เอาใว้ set path_all_template ให้เก็บ ไฟล์ template จาก โฟลเดอร์ที่ใส่เข้ามา
+		return void
+		-----------------------------------------------------------
+		set_template(String|mark, String|content, String|layout)
+			parms|mark		= จุด mark ใน layout
+			parms|content	= ข้อมูลที่จะแทนทั้เข้าไปใน mark นั้น
+			parms|layout	= layout ที่จุด mark นั้นอยู่
+
+			เอาใว้แทนที่ข้อมูลใน layout ที่มีจุด mark ที่กำหนดใว้
+		return content Object(or $this)
+	---------------------------------------------------------------
+	cookie($main->cookie) ระบบจัดการ Cookie และ Session
+
+		Array|cookie|default=[]			= แปลงจาก cookie ใน บราวซ์ลงมาเป็น array และเก็บใว้ใน ตัวนี้
+			cookie[ชื่อ cookie] = ข้อมูล cookie
+		Integer|time_update|default=900	= อัพเดต cookie ในแต่ละครั้งที่ refresh เป็นวินาที
+	---------------------------------------------------------------
+	generater($main->generater) ระบบสุ่มข้อความ
+		
+		generateRandomString(Integer|lenght|default=30, Strings|character'|default='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_')
+			parms|lenght	= ความยาวของข้อความที่ต้องการสร้างแบบสุ่ม
+			parms|character = ตัวอักษรที่โปรแกรมสามารถนำมาสร้างข้อความได้
+
+		return string
+		-----------------------------------------------------------
+		generater(String|text)
+			parms|text	= รูปแบบของข้อความที่ต้องนำมาสร้างข้อความโดยใช้ตัวหนังสือเหล่านี้แทนตัวหนังสือที่กำหนด
+				ตัวอักษรที่ใช้แทน	=	ตัวอักษรที่จะถูกแทนที่
+					'A'			=	A-Z (ตัวอักษรภาษาอังกฤษตัวพิมพ์ใหญ่)
+					'a'			=	a-z (ตัวอักษรภาษาอังกฤษตัวพิมพ์เล็ก)
+					'9'			=	0-9	(ตัวเลข)
+		
+		return string
+	---------------------------------------------------------------
+	security($main->security) ระบบความปลอดภัยพื้นฐาน ป้องกันการโจมตีเบื้องต้น
+
+		StringProtect(String|text, Intiger|max lenght|default=NULL , Boolean|HTML(ป้องกัน HTML)|deafult=true , Boolean|MYSQL(ป้องกัน Mysql)|deafult=true
+			parms|text			= ข้อความที่จะทำการแก้ไขให้ปลอดภัย
+			parms|max lenght	= ความยาวสูงสุดของข้อความ
+			parms|HTML			= ป้องกันการใช้งานแท็ก HTML
+			parms|Mysql			= ป้องกันการใช้งานโค้ด Mysql
+		return String
+		-----------------------------------------------------------
+		SQLProtect(String|mysql, Boolean|html)
+			parms|mysql	= โค้ด mysql
+			parms|html	= ป้องกันการใช้โค้ด HTML
+		return String
+		-----------------------------------------------------------
+		ValueProtect(String|value)
+			parms|value = ค่า value ของ mysql ที่ต้องการป้องกัน
+		return String
+	---------------------------------------------------------------
+	mysql($main->mysql) จัดการ ฐานข้อมูล
+		
+		Integer|query_count|default=0 = จำนวนของการ query
+		Array|query|default=[] = คำสั่งของ query และเวลาในแต่ละ query
+			query[] = [query = คำสั่ง SQL, time = เวลาในการ query คำสั่ง]
+		String|join|default='' = คำสั่ง join ในแต่ละครั้งที่ query จะเก็บเฉพาะ join และเวลาใช้ จะเอามาต่อข้างหลัง FROM
+		String|query_string|default='' = คำสั่ง SQL ทั้งหมด
+
+		__construct(Array|config)
+			parms|config = เป็น arg ที่รับมาจาก Main
+
+			จะทำการเชื่อมต่อไปยัง database
+		return void
+		select(mixed|Args...)
+			parms|Args... = Args ไม่รู้จบ ท่าไม่ใส่เลย ก็ได้ ใส่ตัว เดี่ยวก็ได้ หรือใส่เป็น array ตัวเดี่ยวก็ได้
+
+			จะทำการเอา Args... มาคำนวณและ output ออกมาเป็น SELECT ...
+		return mysql Object(or $this)
+		from(String|table)
+			parms|table = ชื่อ table
+
+			ใช้ต่อกับ select() หรือ delete()
+		return mysql Object(or $this)
+		where(mixed|field, String|value|default=null, String|type|default='AND')
+			parms|field = ท่าเป็น String ต้องใส่ args ตัวที่ 2 ด้วย ท่าเป็น array ไม่ต้อง ท่าจะใส่ operator ให่ใส่ในตัวนี้
+			parms|value = ท่า args ตัวแรกเป็น String จะเปลี่ยนเสมือนว่า WHERE field = value
+			parms|type 	= ตัวเชื่อมระหว่าง เงื่อนไขตัวแรกกับตัวที่สองและตัวที่ n
+
+			เอาใว้ genarate WHERE เพื่อเอามาต่อกับ select()
+		return mysql Object(or $this)
+		order_by(String|field, String|sort|default='ASC')
+			parms|field = ชื่อ field ที่ต้องการเรียงลำดับ
+			parms|sort 	= key word ที่เอาใว้ในการเรียงลำดับของ SQL
+
+			เอาใว้ genarate ORDER BY มาต่อกับ คำสั่ง SQL
+		return mysql Object(or $this)
+		limit(Integer|min, Integer|max|default=null)
+			parms|min = เริ่มต้นที่
+			parms|max = สุดที่
+
+			จำกัดการ query ใว้ที่
+		return mysql Object(or $this)
+		join(String|table, mixed|field, String|value|default=null, String|type|default='AND')
+			parms|table = ชื่อ table ที่ต้องการ join
+			parms|field = ท่าเป็น String ต้องใส่ args ตัวที่ 3 ด้วย ท่าเป็น array ไม่ต้อง ท่าจะใส่ operator ให่ใส่ในตัวนี้
+			parms|value = ท่า args ตัวที่ 2 เป็น String จะเปลี่ยนเสมือนว่า JOIN table ON field = value
+			parms|type 	= ตัวเชื่อมระหว่าง เงื่อนไขตัวแรกกับตัวที่สองและตัวที่ n
+
+			เอาใว้ genarate JOIN เพื่อเอามาใส่ join และเพื่อเอามาต่อ กับ FROM
+		return mysql Object(or $this)

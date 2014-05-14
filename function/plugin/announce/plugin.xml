@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xml>
+  <name>announce</name>
+  <class>announce</class>
+  <install>
+    <database>
+      <table>
+        <name>announce</name>
+        <colum>
+          <name>id</name>
+          <type>int(30)</type>
+          <autonumber>true</autonumber>
+          <primarykey>true</primarykey>
+        </colum>
+      </table>
+    </database>
+  </install>
+</xml>
